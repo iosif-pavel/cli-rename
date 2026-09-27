@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EditFile{
     old:String,
     new:String,
@@ -6,7 +6,18 @@ pub struct EditFile{
     conflict:Conflict
 }
 
-#[derive(Debug)]
+impl EditFile {
+    pub fn new_pending(old:impl Into<String>, new:impl Into<String>, is_safe:bool)->Self{
+        Self { 
+            old:old.into(), 
+            new:new.into(), 
+            state: OpState::Pending, 
+            conflict: if is_safe {Conflict::Safe} else {Conflict::Conflict} 
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub enum OpState {
     Pending,
     Planned,
@@ -15,7 +26,7 @@ pub enum OpState {
     Failed,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Conflict {
     Safe,
     Conflict, 
